@@ -82,7 +82,7 @@ app.post('/api/extract', async (req, res) => {
     const tags = snippet.tags || [];
     const hashtags = (description.match(/#[\w]+/g) || []);
 
-    // 2. Thumbnail (highest available quality)
+    // 2. Thumbnails - offer every size YouTube provides, for download in different resolutions
     const thumbnails = snippet.thumbnails;
     const bestThumbnail =
       thumbnails.maxres?.url ||
@@ -91,12 +91,20 @@ app.post('/api/extract', async (req, res) => {
       thumbnails.medium?.url ||
       thumbnails.default?.url;
 
-    // 3. Transcript (best-effort; not always available)
-    let transcript = [];
+    const thumbnailOptions = [
+      thumbnails.maxres && { label: 'HD (1280x720)', url: thumbnails.maxres.url },
+      thumbnails.standard && { label: 'Standard (640x480)', url: thumbnails.standard.url },
+      thumbnails.high && { label: 'High (480x360)', url: thumbnails.high.url },
+      thumbnails.medium && { label: 'Medium (320x180)', url: thumbnails.medium.url },
+      thumbnails.default && { label: 'Small (120x90)', url: thumbnails.default.url }
+    ].filter(Boolean);
+
+    // 3. Transcript (best-effort; not always available) - joined into one continuous line
+    let transcript = '';
     let transcriptError = null;
     try {
       const rawTranscript = await YoutubeTranscript.fetchTranscript(videoId);
-      transcript = rawTranscript.map(t => ({ text: t.text, offset: t.offset }));
+      transcript = rawTranscript.map(t => t.text).join(' ').replace(/\s+/g, ' ').trim();
     } catch (err) {
       transcriptError = 'Is video par transcript/captions available nahi hain.';
     }
@@ -111,6 +119,7 @@ app.post('/api/extract', async (req, res) => {
       tags,
       hashtags,
       thumbnail: bestThumbnail,
+      thumbnailOptions,
       transcript,
       transcriptError,
       relatedTopics
@@ -122,5 +131,5 @@ app.post('/api/extract', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`YT Toolkit server chal raha hai: http://localhost:${PORT}`);
+  console.log(`AllVidExtract server chal raha hai: http://localhost:${PORT}`);
 });

@@ -1,5 +1,5 @@
 {
-  "name": "yt-toolkit",
+  "name": "allvidextract",
   "version": "1.0.0",
   "description": "YT ID Extractor - title, description, tags, transcript, thumbnail, related topics",
   "main": "server.js",
