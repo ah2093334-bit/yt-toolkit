@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AllVidExtract — Extract Title, Tags, Transcript &amp; Thumbnails from Any Video Link</title>
+<meta name="description" content="Paste a YouTube link and instantly get the title, description, tags, hashtags, HD thumbnails, and transcript. Free tool for creators. Facebook, TikTok, Instagram and Telegram support coming soon.">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <canvas id="starfield"></canvas>
+  <nav class="navbar">
+    <a href="index.html" class="brand">
+      <img src="logo.svg" alt="AllVidExtract logo" class="brand-logo">
+      <span class="brand-name">AllVidExtract</span>
+    </a>
+    <div class="nav-links">
+      <a href="tools.html">Tools</a>
+      <a href="blog.html">Blog</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </nav>
+
+  <div class="hero-content">
+    <span class="eyebrow">Free &middot; No sign-up &middot; Instant</span>
+    <h1>Extract everything from any video link.</h1>
+    <p class="hero-sub">Title, description, tags, hashtags, HD thumbnails, and transcript — pulled in seconds. YouTube today. Facebook, TikTok, Instagram &amp; Telegram coming soon.</p>
+  </div>
+</header>
+
+<main class="stage">
+
+  <section class="input-card">
+    <label for="ytUrl" class="input-label">Paste your video link</label>
+    <div class="input-row">
+      <input id="ytUrl" type="text" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+      <button id="extractBtn">Extract</button>
+    </div>
+    <p id="errorMsg" class="error-msg" hidden></p>
+  </section>
+
+  <div id="scrubber" class="scrubber" hidden>
+    <div class="scrubber-track">
+      <div class="scrubber-fill"></div>
+    </div>
+    <span class="scrubber-label">Extracting…</span>
+  </div>
+
+  <section id="results" class="results" hidden>
+
+    <div class="result-block">
+      <div class="block-head">
+        <span class="block-index">01</span><h2>Title</h2>
+        <button class="copy-btn" data-copy-target="outTitle">Copy</button>
+      </div>
+      <p id="outTitle" class="copyable"></p>
+    </div>
+
+    <div class="result-block">
+      <div class="block-head">
+        <span class="block-index">02</span><h2>Description</h2>
+        <button class="copy-btn" data-copy-target="outDescription">Copy</button>
+      </div>
+      <p id="outDescription" class="copyable pre-wrap"></p>
+    </div>
+
+    <div class="result-block">
+      <div class="block-head">
+        <span class="block-index">03</span><h2>Tags</h2>
+        <button class="copy-btn" data-copy-target="outTags" data-copy-mode="chips">Copy all</button>
+      </div>
+      <div id="outTags" class="chip-row"></div>
+    </div>
+
+    <div class="result-block">
+      <div class="block-head">
+        <span class="block-index">04</span><h2>Hashtags</h2>
+        <button class="copy-btn" data-copy-target="outHashtags" data-copy-mode="chips">Copy all</button>
+      </div>
+      <div id="outHashtags" class="chip-row"></div>
+    </div>
+
+    <div class="result-block">
+      <div class="block-head"><span class="block-index">05</span><h2>Thumbnail</h2></div>
+      <div class="thumb-wrap">
+        <img id="outThumb" alt="Video thumbnail">
+        <div id="thumbOptions" class="thumb-options"></div>
+      </div>
+    </div>
+
+    <div class="result-block">
+      <div class="block-head">
+        <span class="block-index">06</span><h2>Transcript</h2>
+        <button class="copy-btn" data-copy-target="outTranscript">Copy</button>
+      </div>
+      <p id="outTranscript" class="transcript-box"></p>
+    </div>
+
+    <div class="result-block">
+      <div class="block-head"><span class="block-index">07</span><h2>Related topic ideas</h2></div>
+      <ol id="outTopics" class="topic-list"></ol>
+    </div>
+
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="logo.svg" alt="AllVidExtract logo" class="brand-logo">
+      <span class="brand-name">AllVidExtract</span>
+      <p>Metadata &amp; captions only. No video/audio downloading — keeps this tool within every platform's terms.</p>
+    </div>
+    <div class="footer-links">
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy Policy</a>
+    </div>
+  </div>
+  <p class="footer-credit">Built by Wafadar</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
