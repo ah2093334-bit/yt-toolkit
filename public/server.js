@@ -48,23 +48,29 @@ function extractVideoId(url) {
 }
 
 // --- Helper: build 8-10 related topic suggestions from title + tags ---
-// NOTE: this is a lightweight keyword-recombination approach, not real-time
-// trending data. For true trending data, Google Trends API can be wired in later.
+// NOTE: this is a lightweight keyword-recombination approach, not real AI
+// generation or real-time trending data. For genuinely smart, context-aware
+// topic ideas, this function can be swapped to call an AI API (Claude/GPT)
+// if an API key is provided later.
 function buildRelatedTopics(title, tags) {
-  const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'for', 'of', 'to', 'in', 'on', 'with', 'is', 'how', 'best', 'video']);
+  const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'for', 'of', 'to', 'in', 'on', 'with', 'is', 'how', 'best', 'video', 'this', 'that', 'you', 'your']);
   const words = [...title.toLowerCase().split(/\W+/), ...tags.map(t => t.toLowerCase())]
     .filter(w => w.length > 2 && !stopWords.has(w));
 
-  const uniqueWords = [...new Set(words)].slice(0, 6);
+  const uniqueWords = [...new Set(words)].slice(0, 8);
+  const year = new Date().getFullYear();
+
   const templates = [
-    (w) => `${w} for beginners 2026`,
-    (w) => `best ${w} tips`,
-    (w) => `${w} vs alternatives`,
-    (w) => `how to master ${w}`,
-    (w) => `${w} mistakes to avoid`,
-    (w) => `${w} explained step by step`,
-    (w) => `top ${w} tools`,
-    (w) => `${w} trends this year`
+    (w) => `A beginner's complete guide to ${w} — what to know before you start`,
+    (w) => `The most common ${w} mistakes people make, and how to avoid them`,
+    (w) => `${w} vs. the alternatives: which one actually works better?`,
+    (w) => `Step-by-step: how to master ${w} even if you're starting from zero`,
+    (w) => `What nobody tells you about ${w} until it's too late`,
+    (w) => `${w} explained simply, in under 10 minutes`,
+    (w) => `The top tools and resources for ${w} in ${year}`,
+    (w) => `How ${w} trends are shifting in ${year}, and what to expect next`,
+    (w) => `Real results: what actually happens when you try ${w}`,
+    (w) => `${w} for beginners: a practical checklist to get started today`
   ];
 
   const topics = [];
