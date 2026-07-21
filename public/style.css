@@ -49,6 +49,92 @@ h1, h2, .brand-name { font-family: 'Sora', sans-serif; }
   padding: 22px 24px 0;
 }
 
+.navbar-left { display: flex; align-items: center; gap: 14px; }
+
+.menu-btn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+}
+.menu-btn span { width: 18px; height: 2px; background: #fff; border-radius: 2px; }
+.menu-btn:hover { background: rgba(255,255,255,0.15); }
+
+/* Rainbow animated text */
+.rainbow-text {
+  background: linear-gradient(90deg, #ff5f6d, #ffc371, #47cf73, #00c2d1, #5B4FE9, #ff5f6d);
+  background-size: 400% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: rainbowShift 8s linear infinite;
+}
+@keyframes rainbowShift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 400% 50%; }
+}
+
+.welcome-line {
+  font-family: 'Sora', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 0 0 10px;
+}
+
+/* Sidebar menu */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 16, 48, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  z-index: 40;
+}
+.sidebar-overlay.open { opacity: 1; pointer-events: auto; }
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 260px;
+  background: var(--hero-dark);
+  z-index: 50;
+  padding: 24px;
+  transform: translateX(-100%);
+  transition: transform 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar.open { transform: translateX(0); }
+
+.sidebar-close {
+  align-self: flex-end;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-bottom: 14px;
+}
+
+.sidebar-links { display: flex; flex-direction: column; gap: 18px; }
+.sidebar-links a {
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+}
+.sidebar-links a:hover { color: var(--secondary); }
+
 .brand {
   display: flex;
   align-items: center;
@@ -292,6 +378,38 @@ h1, h2, .brand-name { font-family: 'Sora', sans-serif; }
 .footer-brand .brand-name { color: #fff; }
 .footer-brand p { font-size: 0.85rem; color: rgba(255,255,255,0.55); margin: 0; }
 
+.social-row { display: flex; gap: 14px; margin-top: 6px; }
+.social-row a {
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 0.82rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px;
+  padding: 5px 10px;
+}
+.social-row a:hover { color: #fff; border-color: rgba(255,255,255,0.5); }
+
+.footer-person {
+  max-width: 1100px;
+  margin: 28px auto 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.footer-photo {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--secondary);
+}
+.footer-person-name { margin: 0; color: #fff; font-weight: 600; font-size: 0.95rem; }
+.footer-person-contact { margin: 2px 0 0; color: rgba(255,255,255,0.55); font-size: 0.82rem; }
+
+.big-text { font-size: 1.2rem; font-weight: 600; line-height: 1.4; }
+
 .footer-links { display: flex; gap: 20px; align-items: flex-start; }
 .footer-links a { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 0.9rem; }
 .footer-links a:hover { color: #fff; }
@@ -322,6 +440,28 @@ h1, h2, .brand-name { font-family: 'Sora', sans-serif; }
 .page-content a { color: var(--primary-dark); }
 .contact-row { display: flex; align-items: center; gap: 10px; margin: 14px 0; }
 .contact-row .icon { font-size: 1.2rem; }
+
+.article-meta {
+  color: var(--muted);
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+
+.blog-list { display: flex; flex-direction: column; gap: 18px; margin-top: 20px; }
+.blog-item {
+  display: block;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  text-decoration: none;
+  transition: border-color 0.15s, transform 0.15s;
+}
+.blog-item:hover { border-color: var(--primary); transform: translateY(-1px); }
+.blog-item h2 { margin: 0 0 6px; color: var(--ink); font-size: 1.05rem; }
+.blog-item p { margin: 0; color: var(--muted); font-size: 0.9rem; }
 
 @media (prefers-reduced-motion: reduce) {
   .scrubber-fill { animation: none; }

@@ -1,3 +1,25 @@
+/* ---------- Sidebar menu ---------- */
+(function initSidebar() {
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  const closeBtn = document.getElementById('sidebarClose');
+  if (!menuBtn || !sidebar || !overlay) return;
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    overlay.classList.add('open');
+  }
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('open');
+  }
+
+  menuBtn.addEventListener('click', openSidebar);
+  overlay.addEventListener('click', closeSidebar);
+  if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+})();
+
 /* ---------- Falling starfield (signature header animation) ---------- */
 (function initStarfield() {
   const canvas = document.getElementById('starfield');
@@ -82,7 +104,7 @@ async function extract() {
     const data = await res.json();
 
     if (!res.ok) {
-      showError(data.error || 'Something went wrong.');
+      showError(data.limitReached ? `⏳ ${data.error}` : (data.error || 'Something went wrong.'));
       return;
     }
 
@@ -116,8 +138,8 @@ async function extract() {
     (data.thumbnailOptions || []).forEach(opt => {
       const a = document.createElement('a');
       a.className = 'thumb-download-btn';
-      a.href = opt.url;
-      a.download = `thumbnail-${opt.label.split(' ')[0].toLowerCase()}.jpg`;
+      const label = opt.label.split(' ')[0].toLowerCase();
+      a.href = `/api/download-thumbnail?url=${encodeURIComponent(opt.url)}&label=${encodeURIComponent(label)}`;
       a.textContent = `Download ${opt.label}`;
       thumbOptions.appendChild(a);
     });

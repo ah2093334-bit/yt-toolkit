@@ -10,6 +10,31 @@ const API_KEY = process.env.YOUTUBE_API_KEY;
 app.use(express.json());
 app.use(express.static('public'));
 
+// --- Simple in-memory rate limiter: 5 free extractions per IP per day ---
+// NOTE: resets when the server restarts (Railway free tier can restart the
+// service periodically). For a persistent/paid-tier limit, this would need
+// a real database instead of memory.
+const DAILY_LIMIT = 5;
+const usageByIp = new Map();
+
+function rateLimit(req, res, next) {
+  const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress;
+  const today = new Date().toISOString().slice(0, 10);
+  const key = `${ip}_${today}`;
+  const count = usageByIp.get(key) || 0;
+
+  if (count >= DAILY_LIMIT) {
+    return res.status(429).json({
+      error: `Free limit reached (${DAILY_LIMIT} extractions/day). Please try again tomorrow.`,
+      limitReached: true
+    });
+  }
+
+  usageByIp.set(key, count + 1);
+  res.setHeader('X-RateLimit-Remaining', DAILY_LIMIT - (count + 1));
+  next();
+}
+
 // --- Helper: extract video ID from any YouTube URL format ---
 function extractVideoId(url) {
   const patterns = [
@@ -55,7 +80,7 @@ function buildRelatedTopics(title, tags) {
 }
 
 // --- Main extraction endpoint ---
-app.post('/api/extract', async (req, res) => {
+app.post('/api/extract', rateLimit, async (req, res) => {
   try {
     const { url } = req.body;
     if (!url) return res.status(400).json({ error: 'YouTube URL zaroori hai.' });
@@ -127,6 +152,30 @@ app.post('/api/extract', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Kuch galat ho gaya. Dobara try karein.' });
+  }
+});
+
+// --- Thumbnail download proxy ---
+// Direct <a download> links don't work across origins (browser just opens
+// the image instead of saving it). This route fetches the image on our
+// server and streams it back with a Content-Disposition header so the
+// browser's save dialog actually triggers, in the exact resolution clicked.
+app.get('/api/download-thumbnail', async (req, res) => {
+  try {
+    const { url, label } = req.query;
+    if (!url || !url.startsWith('https://i.ytimg.com') && !url.startsWith('https://img.youtube.com')) {
+      return res.status(400).send('Invalid thumbnail URL.');
+    }
+    const imgRes = await fetch(url);
+    if (!imgRes.ok) return res.status(404).send('Thumbnail not found.');
+
+    const safeLabel = (label || 'thumbnail').toString().replace(/[^a-z0-9]/gi, '-').toLowerCase();
+    res.setHeader('Content-Disposition', `attachment; filename="${safeLabel}.jpg"`);
+    res.setHeader('Content-Type', imgRes.headers.get('content-type') || 'image/jpeg');
+    imgRes.body.pipe(res);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Could not download thumbnail.');
   }
 });
 
