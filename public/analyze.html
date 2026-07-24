@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Blog — AllVidExtract</title>
-<meta name="description" content="Tips for YouTube creators: titles, tags, and thumbnails that perform.">
+<title>YouTube Title Analyzer — Free SEO &amp; CTR Score — AllVidExtract</title>
+<meta name="description" content="Paste your YouTube video title and get an instant SEO and click-through-rate strength score, with specific suggestions to improve it.">
 <link rel="icon" href="logo.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -34,7 +34,7 @@
   </nav>
 </aside>
 
-<header class="site-header" style="padding-bottom: 40px;">
+<header class="site-header">
   <canvas id="starfield"></canvas>
   <nav class="navbar">
     <div class="navbar-left">
@@ -56,54 +56,50 @@
       <a href="contact.html">Contact</a>
     </div>
   </nav>
+
+  <div class="hero-content">
+    <p class="welcome-line rainbow-text">Welcome to AllVidExtract Title Analyzer</p>
+    <span class="eyebrow">Free &middot; No sign-up &middot; Instant</span>
+    <h1>Score your YouTube title before you publish.</h1>
+    <p class="hero-sub">Type any title and get an instant SEO/CTR strength score, with specific suggestions to improve it — free, no video link needed.</p>
+  </div>
 </header>
 
-<main class="page-content">
-  <h1>Blog</h1>
-  <p>Guides and tips for YouTube creators.</p>
+<main class="stage">
 
-  <div class="blog-list">
-    <a href="blog-extract-title-tags-description.html" class="blog-item">
-      <h2>How to Extract YouTube Title, Tags &amp; Description for Free</h2>
-      <p>The fastest way to pull a video's metadata without digging through page source.</p>
-    </a>
-    <a href="blog-download-youtube-thumbnail-hd.html" class="blog-item">
-      <h2>Download YouTube Thumbnails in HD — Step by Step</h2>
-      <p>Get the real high-resolution thumbnail file instead of a blurry screenshot.</p>
-    </a>
-    <a href="blog-youtube-transcript-extractor.html" class="blog-item">
-      <h2>How to Get a YouTube Video Transcript Instantly</h2>
-      <p>Skip typing along with the video — pull the full transcript as clean text.</p>
-    </a>
-    <a href="blog-best-free-tools-youtube-creators.html" class="blog-item">
-      <h2>Best Free Tools for YouTube Creators in 2026</h2>
-      <p>A practical roundup of free tools worth having in your creator workflow.</p>
-    </a>
-    <a href="blog-youtube-hashtags-explained.html" class="blog-item">
-      <h2>YouTube Hashtags Explained: How Many to Use and Where</h2>
-      <p>The 15-hashtag limit, best placement, and mistakes to avoid.</p>
-    </a>
-    <a href="blog-youtube-description-that-ranks.html" class="blog-item">
-      <h2>How to Write a YouTube Description That Ranks</h2>
-      <p>A proven structure, with a real before-and-after example.</p>
-    </a>
-    <a href="blog-youtube-tags-vs-hashtags.html" class="blog-item">
-      <h2>YouTube Tags vs Hashtags: What's the Difference</h2>
-      <p>Two different features that do two very different jobs.</p>
-    </a>
-    <a href="blog-find-competitor-youtube-keywords.html" class="blog-item">
-      <h2>How to Find What Your Competitors Are Ranking For</h2>
-      <p>A step-by-step research process, no paid tools required.</p>
-    </a>
-    <a href="blog-complete-beginners-guide-youtube-seo.html" class="blog-item">
-      <h2>The Complete Beginner's Guide to YouTube SEO</h2>
-      <p>Everything a beginner needs to know, explained simply.</p>
-    </a>
-    <a href="blog-how-to-start-faceless-youtube-channel.html" class="blog-item">
-      <h2>How to Start a Faceless YouTube Channel</h2>
-      <p>A realistic, step-by-step guide — format, scripting, voice, and visuals.</p>
-    </a>
-  </div>
+  <section class="input-card">
+    <label for="titleInput" class="input-label">Type your video title</label>
+    <div class="input-row">
+      <input id="titleInput" type="text" placeholder="e.g. 7 Mistakes Beginners Make When Editing Video" autocomplete="off" maxlength="150">
+      <button id="analyzeBtn">Analyze</button>
+    </div>
+    <p id="charCount" class="char-count">0 characters</p>
+  </section>
+
+  <section id="analyzeResults" class="results" hidden>
+
+    <div class="result-block score-block">
+      <div class="score-circle">
+        <span id="scoreNumber">0</span><span class="score-max">/100</span>
+      </div>
+      <div>
+        <p id="scoreGrade" class="score-grade"></p>
+        <p id="scoreSummary" class="score-summary"></p>
+      </div>
+    </div>
+
+    <div class="result-block">
+      <div class="block-head"><span class="block-index">01</span><h2>Breakdown</h2></div>
+      <ul id="breakdownList" class="breakdown-list"></ul>
+    </div>
+
+    <div class="result-block">
+      <div class="block-head"><span class="block-index">02</span><h2>Suggestions</h2></div>
+      <ul id="suggestionsList" class="topic-list"></ul>
+    </div>
+
+  </section>
+
 </main>
 
 <footer class="site-footer">

@@ -358,6 +358,39 @@ h1, h2, .brand-name { font-family: 'Sora', sans-serif; }
 
 .topic-list { margin: 0; padding-left: 20px; line-height: 2; }
 
+.char-count { color: var(--muted); font-size: 0.8rem; margin: 10px 0 0; }
+
+.score-block {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.score-circle {
+  flex-shrink: 0;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: #fff;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  font-family: 'Sora', sans-serif;
+}
+.score-circle #scoreNumber { font-size: 2rem; font-weight: 800; }
+.score-max { font-size: 0.9rem; opacity: 0.8; margin-left: 2px; }
+.score-grade { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1.15rem; margin: 0 0 4px; }
+.score-summary { color: var(--muted); font-size: 0.9rem; margin: 0; }
+
+.breakdown-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.breakdown-list li { font-size: 0.9rem; padding: 8px 12px; border-radius: 8px; }
+.breakdown-ok { background: #EAF9FA; color: #0A8E99; }
+.breakdown-bad { background: #FDEEEA; color: #B5432E; }
+
+@media (max-width: 480px) {
+  .score-block { flex-direction: column; align-items: flex-start; }
+}
+
 /* ---------- Footer ---------- */
 .site-footer {
   background: var(--hero-dark);
@@ -462,6 +495,7 @@ h1, h2, .brand-name { font-family: 'Sora', sans-serif; }
 .blog-item:hover { border-color: var(--primary); transform: translateY(-1px); }
 .blog-item h2 { margin: 0 0 6px; color: var(--ink); font-size: 1.05rem; }
 .blog-item p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+.product-price { color: var(--primary-dark) !important; font-weight: 700 !important; font-size: 1.1rem !important; margin: 10px 0 !important; }
 
 @media (prefers-reduced-motion: reduce) {
   .scrubber-fill { animation: none; }
