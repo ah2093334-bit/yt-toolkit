@@ -10,6 +10,31 @@ const API_KEY = process.env.YOUTUBE_API_KEY;
 app.use(express.json());
 app.use(express.static('public'));
 
+// --- Simple in-memory rate limiter: 5 free extractions per IP per day ---
+// NOTE: resets when the server restarts (Railway free tier can restart the
+// service periodically). For a persistent/paid-tier limit, this would need
+// a real database instead of memory.
+const DAILY_LIMIT = 5;
+const usageByIp = new Map();
+
+function rateLimit(req, res, next) {
+  const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress;
+  const today = new Date().toISOString().slice(0, 10);
+  const key = `${ip}_${today}`;
+  const count = usageByIp.get(key) || 0;
+
+  if (count >= DAILY_LIMIT) {
+    return res.status(429).json({
+      error: `Free limit reached (${DAILY_LIMIT} extractions/day). Please try again tomorrow.`,
+      limitReached: true
+    });
+  }
+
+  usageByIp.set(key, count + 1);
+  res.setHeader('X-RateLimit-Remaining', DAILY_LIMIT - (count + 1));
+  next();
+}
+
 // --- Helper: extract video ID from any YouTube URL format ---
 function extractVideoId(url) {
   const patterns = [
@@ -23,23 +48,29 @@ function extractVideoId(url) {
 }
 
 // --- Helper: build 8-10 related topic suggestions from title + tags ---
-// NOTE: this is a lightweight keyword-recombination approach, not real-time
-// trending data. For true trending data, Google Trends API can be wired in later.
+// NOTE: this is a lightweight keyword-recombination approach, not real AI
+// generation or real-time trending data. For genuinely smart, context-aware
+// topic ideas, this function can be swapped to call an AI API (Claude/GPT)
+// if an API key is provided later.
 function buildRelatedTopics(title, tags) {
-  const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'for', 'of', 'to', 'in', 'on', 'with', 'is', 'how', 'best', 'video']);
+  const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'for', 'of', 'to', 'in', 'on', 'with', 'is', 'how', 'best', 'video', 'this', 'that', 'you', 'your']);
   const words = [...title.toLowerCase().split(/\W+/), ...tags.map(t => t.toLowerCase())]
     .filter(w => w.length > 2 && !stopWords.has(w));
 
-  const uniqueWords = [...new Set(words)].slice(0, 6);
+  const uniqueWords = [...new Set(words)].slice(0, 8);
+  const year = new Date().getFullYear();
+
   const templates = [
-    (w) => `${w} for beginners 2026`,
-    (w) => `best ${w} tips`,
-    (w) => `${w} vs alternatives`,
-    (w) => `how to master ${w}`,
-    (w) => `${w} mistakes to avoid`,
-    (w) => `${w} explained step by step`,
-    (w) => `top ${w} tools`,
-    (w) => `${w} trends this year`
+    (w) => `A beginner's complete guide to ${w} — what to know before you start`,
+    (w) => `The most common ${w} mistakes people make, and how to avoid them`,
+    (w) => `${w} vs. the alternatives: which one actually works better?`,
+    (w) => `Step-by-step: how to master ${w} even if you're starting from zero`,
+    (w) => `What nobody tells you about ${w} until it's too late`,
+    (w) => `${w} explained simply, in under 10 minutes`,
+    (w) => `The top tools and resources for ${w} in ${year}`,
+    (w) => `How ${w} trends are shifting in ${year}, and what to expect next`,
+    (w) => `Real results: what actually happens when you try ${w}`,
+    (w) => `${w} for beginners: a practical checklist to get started today`
   ];
 
   const topics = [];
@@ -54,8 +85,63 @@ function buildRelatedTopics(title, tags) {
   return topics.slice(0, 10);
 }
 
+// --- Video stats endpoint: views, likes, comments, channel info ---
+// Uses the free YouTube Data API "statistics" and "snippet" parts.
+// Earnings are NOT available from any public API — YouTube never exposes
+// another channel's real ad revenue to anyone but the channel owner. The
+// "estimated earnings" below is a rough, clearly-labeled public estimate
+// based on typical industry CPM ranges, not real data.
+app.get('/api/video-stats', rateLimit, async (req, res) => {
+  try {
+    const { url } = req.query;
+    if (!url) return res.status(400).json({ error: 'Video URL is required.' });
+
+    const videoId = extractVideoId(url);
+    if (!videoId) return res.status(400).json({ error: 'Could not find a valid YouTube video ID in that link.' });
+
+    if (!API_KEY) return res.status(500).json({ error: 'YOUTUBE_API_KEY not set on the server.' });
+
+    const apiUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoId}&key=${API_KEY}`;
+    const apiRes = await fetch(apiUrl);
+    const apiData = await apiRes.json();
+
+    if (!apiData.items || apiData.items.length === 0) {
+      return res.status(404).json({ error: 'Video not found.' });
+    }
+
+    const { snippet, statistics } = apiData.items[0];
+    const views = parseInt(statistics.viewCount || '0', 10);
+    const likes = statistics.likeCount ? parseInt(statistics.likeCount, 10) : null;
+    const comments = statistics.commentCount ? parseInt(statistics.commentCount, 10) : null;
+
+    // Rough public CPM range used across the industry for estimate calculators.
+    // Real earnings depend on niche, audience country, ad settings, and are
+    // only ever visible to the channel owner in YouTube Studio.
+    const lowCPM = 0.25;
+    const highCPM = 4;
+    const estimateLow = ((views / 1000) * lowCPM).toFixed(2);
+    const estimateHigh = ((views / 1000) * highCPM).toFixed(2);
+
+    res.json({
+      videoId,
+      title: snippet.title,
+      channelTitle: snippet.channelTitle,
+      channelId: snippet.channelId,
+      publishedAt: snippet.publishedAt,
+      views,
+      likes,
+      comments,
+      estimateLow,
+      estimateHigh
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Could not fetch video stats. Please try again.' });
+  }
+});
+
 // --- Main extraction endpoint ---
-app.post('/api/extract', async (req, res) => {
+app.post('/api/extract', rateLimit, async (req, res) => {
   try {
     const { url } = req.body;
     if (!url) return res.status(400).json({ error: 'YouTube URL zaroori hai.' });
@@ -127,6 +213,30 @@ app.post('/api/extract', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Kuch galat ho gaya. Dobara try karein.' });
+  }
+});
+
+// --- Thumbnail download proxy ---
+// Direct <a download> links don't work across origins (browser just opens
+// the image instead of saving it). This route fetches the image on our
+// server and streams it back with a Content-Disposition header so the
+// browser's save dialog actually triggers, in the exact resolution clicked.
+app.get('/api/download-thumbnail', async (req, res) => {
+  try {
+    const { url, label } = req.query;
+    if (!url || !url.startsWith('https://i.ytimg.com') && !url.startsWith('https://img.youtube.com')) {
+      return res.status(400).send('Invalid thumbnail URL.');
+    }
+    const imgRes = await fetch(url);
+    if (!imgRes.ok) return res.status(404).send('Thumbnail not found.');
+
+    const safeLabel = (label || 'thumbnail').toString().replace(/[^a-z0-9]/gi, '-').toLowerCase();
+    res.setHeader('Content-Disposition', `attachment; filename="${safeLabel}.jpg"`);
+    res.setHeader('Content-Type', imgRes.headers.get('content-type') || 'image/jpeg');
+    imgRes.body.pipe(res);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Could not download thumbnail.');
   }
 });
 
