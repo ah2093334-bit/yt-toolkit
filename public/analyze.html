@@ -12,6 +12,10 @@
 </head>
 <body>
 
+<div class="ticker-bar"><div class="ticker-track">🏠 Home &nbsp;•&nbsp; 🎬 Extractor &nbsp;•&nbsp; 📊 Title Analyzer &nbsp;•&nbsp; 🛒 Store &nbsp;•&nbsp; 📰 Blog &nbsp;•&nbsp; 💬 Support &nbsp;•&nbsp; ℹ️ About &nbsp;•&nbsp; ✉️ Contact &nbsp;•&nbsp; 🏠 Home &nbsp;•&nbsp; 🎬 Extractor &nbsp;•&nbsp; 📊 Title Analyzer &nbsp;•&nbsp; 🛒 Store &nbsp;•&nbsp; 📰 Blog &nbsp;•&nbsp; 💬 Support &nbsp;•&nbsp; ℹ️ About &nbsp;•&nbsp; ✉️ Contact</div></div>
+
+
+
 <!-- Sidebar menu -->
 <div id="sidebarOverlay" class="sidebar-overlay"></div>
 <aside id="sidebar" class="sidebar">
@@ -67,14 +71,25 @@
 
 <main class="stage">
 
+  <div class="mode-toggle">
+    <button id="modeTitleBtn" class="mode-btn active">ð Analyze Title</button>
+    <button id="modeUrlBtn" class="mode-btn">ð Analyze Video URL</button>
+  </div>
+
   <section class="input-card">
-    <label for="titleInput" class="input-label">Type your video title</label>
+    <label id="inputLabel" for="titleInput" class="input-label">Type your video title</label>
     <div class="input-row">
       <input id="titleInput" type="text" placeholder="e.g. 7 Mistakes Beginners Make When Editing Video" autocomplete="off" maxlength="150">
       <button id="analyzeBtn">Analyze</button>
     </div>
     <p id="charCount" class="char-count">0 characters</p>
+    <p id="urlErrorMsg" class="error-msg" hidden></p>
   </section>
+
+  <div id="urlScrubber" class="scrubber" hidden>
+    <div class="scrubber-track"><div class="scrubber-fill"></div></div>
+    <span class="scrubber-label">Fetching stats…</span>
+  </div>
 
   <section id="analyzeResults" class="results" hidden>
 
@@ -98,9 +113,39 @@
       <ul id="suggestionsList" class="topic-list"></ul>
     </div>
 
+    <div class="result-block">
+      <div class="block-head">
+        <span class="block-index">03</span><h2>Suggested Tags &amp; Keywords</h2>
+        <button class="copy-btn" data-copy-target="suggestedTags" data-copy-mode="chips">Copy all</button>
+      </div>
+      <div id="suggestedTags" class="chip-row"></div>
+    </div>
+
+  </section>
+
+  <section id="videoStatsResults" class="results" hidden>
+    <div class="result-block">
+      <div class="block-head"><span class="block-index">01</span><h2>Video &amp; Channel Info</h2></div>
+      <div class="stats-grid">
+        <div class="stat-card"><span class="stat-label">Views</span><span id="statViews" class="stat-value"></span></div>
+        <div class="stat-card"><span class="stat-label">Likes</span><span id="statLikes" class="stat-value"></span></div>
+        <div class="stat-card"><span class="stat-label">Comments</span><span id="statComments" class="stat-value"></span></div>
+        <div class="stat-card"><span class="stat-label">Published</span><span id="statPublished" class="stat-value"></span></div>
+      </div>
+      <p class="stat-channel">Channel: <strong id="statChannelTitle"></strong></p>
+      <p class="stat-channel-id">Channel ID: <span id="statChannelId" class="copyable-inline"></span></p>
+    </div>
+
+    <div class="result-block">
+      <div class="block-head"><span class="block-index">02</span><h2>Estimated Earnings</h2></div>
+      <p id="statEarnings" class="copyable"></p>
+      <p class="estimate-disclaimer">⚠ï¸ This is a rough public estimate based on typical industry CPM ranges ($0.25–$4 per 1,000 views), <strong>not real revenue data</strong>. YouTube never shares a channel's actual ad earnings with anyone but the channel owner — actual earnings depend on niche, audience location, ad settings, and many other private factors.</p>
+    </div>
   </section>
 
 </main>
+
+<!-- footer/script comes from template below -->
 
 <footer class="site-footer">
   <div class="footer-grid">

@@ -4,7 +4,84 @@
   const analyzeBtn = document.getElementById('analyzeBtn');
   const charCount = document.getElementById('charCount');
   const results = document.getElementById('analyzeResults');
+  const inputLabel = document.getElementById('inputLabel');
+  const modeTitleBtn = document.getElementById('modeTitleBtn');
+  const modeUrlBtn = document.getElementById('modeUrlBtn');
+  const videoStatsResults = document.getElementById('videoStatsResults');
+  const urlScrubber = document.getElementById('urlScrubber');
+  const urlErrorMsg = document.getElementById('urlErrorMsg');
   if (!titleInput || !analyzeBtn) return;
+
+  let currentMode = 'title';
+
+  if (modeTitleBtn && modeUrlBtn) {
+    modeTitleBtn.addEventListener('click', () => {
+      currentMode = 'title';
+      modeTitleBtn.classList.add('active');
+      modeUrlBtn.classList.remove('active');
+      inputLabel.textContent = 'Type your video title';
+      titleInput.placeholder = 'e.g. 7 Mistakes Beginners Make When Editing Video';
+      titleInput.value = '';
+      charCount.hidden = false;
+      results.hidden = true;
+      videoStatsResults.hidden = true;
+      urlErrorMsg.hidden = true;
+    });
+    modeUrlBtn.addEventListener('click', () => {
+      currentMode = 'url';
+      modeUrlBtn.classList.add('active');
+      modeTitleBtn.classList.remove('active');
+      inputLabel.textContent = 'Paste the video URL';
+      titleInput.placeholder = 'https://www.youtube.com/watch?v=...';
+      titleInput.value = '';
+      charCount.hidden = true;
+      results.hidden = true;
+      videoStatsResults.hidden = true;
+      urlErrorMsg.hidden = true;
+    });
+  }
+
+  titleInput.addEventListener('input', () => {
+    if (currentMode === 'title') charCount.textContent = `${titleInput.value.length} characters`;
+  });
+
+  function formatNumber(n) {
+    if (n === null || n === undefined) return 'Not available';
+    return n.toLocaleString('en-US');
+  }
+
+  async function fetchVideoStats(url) {
+    urlErrorMsg.hidden = true;
+    results.hidden = true;
+    videoStatsResults.hidden = true;
+    urlScrubber.hidden = false;
+
+    try {
+      const res = await fetch(`/api/video-stats?url=${encodeURIComponent(url)}`);
+      const data = await res.json();
+
+      if (!res.ok) {
+        urlErrorMsg.textContent = data.limitReached ? `⏳ ${data.error}` : (data.error || 'Something went wrong.');
+        urlErrorMsg.hidden = false;
+        return;
+      }
+
+      document.getElementById('statViews').textContent = formatNumber(data.views);
+      document.getElementById('statLikes').textContent = formatNumber(data.likes);
+      document.getElementById('statComments').textContent = formatNumber(data.comments);
+      document.getElementById('statPublished').textContent = new Date(data.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+      document.getElementById('statChannelTitle').textContent = data.channelTitle;
+      document.getElementById('statChannelId').textContent = data.channelId;
+      document.getElementById('statEarnings').textContent = `$${data.estimateLow} – $${data.estimateHigh}`;
+
+      videoStatsResults.hidden = false;
+    } catch (err) {
+      urlErrorMsg.textContent = 'Could not connect to the server. Please try again.';
+      urlErrorMsg.hidden = false;
+    } finally {
+      urlScrubber.hidden = true;
+    }
+  }
 
   const POWER_WORDS = ['secret', 'best', 'ultimate', 'proven', 'mistake', 'mistakes', 'ever', 'never',
     'stop', 'warning', 'truth', 'shocking', 'insane', 'easy', 'fast', 'free', 'guide', 'tips', 'hack',
@@ -15,6 +92,29 @@
   });
 
   function countWords(str) { return str.trim().split(/\s+/).filter(Boolean).length; }
+
+  // Build suggested tags/keywords from the title — same lightweight
+  // keyword-recombination approach used for "related topics" on the
+  // extractor page. Not real search-volume data (that needs a paid SEO
+  // API); this is meant as a quick tagging starting point.
+  function buildSuggestedTags(title) {
+    const stopWords = new Set(['the', 'a', 'an', 'and', 'or', 'for', 'of', 'to', 'in', 'on', 'with',
+      'is', 'how', 'best', 'video', 'this', 'that', 'you', 'your', 'i', 'my', 'me']);
+    const words = title.toLowerCase().split(/\W+/).filter(w => w.length > 2 && !stopWords.has(w));
+    const uniqueWords = [...new Set(words)].slice(0, 6);
+
+    const modifiers = ['tips', 'guide', 'tutorial', 'for beginners', 'explained', 'ideas', '2026', 'how to'];
+    const tags = new Set();
+
+    uniqueWords.forEach(w => tags.add(w));
+    uniqueWords.forEach((w, i) => {
+      const mod = modifiers[i % modifiers.length];
+      tags.add(`${w} ${mod}`);
+    });
+    if (uniqueWords.length >= 2) tags.add(`${uniqueWords[0]} ${uniqueWords[1]}`);
+
+    return [...tags].slice(0, 12);
+  }
 
   function analyzeTitle(title) {
     const breakdown = [];
@@ -124,13 +224,28 @@
       suggestionsList.appendChild(li);
     });
 
+    const tagsWrap = document.getElementById('suggestedTags');
+    if (tagsWrap) {
+      tagsWrap.innerHTML = '';
+      buildSuggestedTags(titleInput.value.trim()).forEach(tag => {
+        const chip = document.createElement('span');
+        chip.className = 'chip';
+        chip.textContent = tag;
+        tagsWrap.appendChild(chip);
+      });
+    }
+
     results.hidden = false;
   }
 
   analyzeBtn.addEventListener('click', () => {
-    const title = titleInput.value.trim();
-    if (!title) return;
-    renderResults(analyzeTitle(title));
+    const value = titleInput.value.trim();
+    if (!value) return;
+    if (currentMode === 'title') {
+      renderResults(analyzeTitle(value));
+    } else {
+      fetchVideoStats(value);
+    }
   });
   titleInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') analyzeBtn.click();

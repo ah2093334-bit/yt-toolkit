@@ -85,6 +85,61 @@ function buildRelatedTopics(title, tags) {
   return topics.slice(0, 10);
 }
 
+// --- Video stats endpoint: views, likes, comments, channel info ---
+// Uses the free YouTube Data API "statistics" and "snippet" parts.
+// Earnings are NOT available from any public API — YouTube never exposes
+// another channel's real ad revenue to anyone but the channel owner. The
+// "estimated earnings" below is a rough, clearly-labeled public estimate
+// based on typical industry CPM ranges, not real data.
+app.get('/api/video-stats', rateLimit, async (req, res) => {
+  try {
+    const { url } = req.query;
+    if (!url) return res.status(400).json({ error: 'Video URL is required.' });
+
+    const videoId = extractVideoId(url);
+    if (!videoId) return res.status(400).json({ error: 'Could not find a valid YouTube video ID in that link.' });
+
+    if (!API_KEY) return res.status(500).json({ error: 'YOUTUBE_API_KEY not set on the server.' });
+
+    const apiUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoId}&key=${API_KEY}`;
+    const apiRes = await fetch(apiUrl);
+    const apiData = await apiRes.json();
+
+    if (!apiData.items || apiData.items.length === 0) {
+      return res.status(404).json({ error: 'Video not found.' });
+    }
+
+    const { snippet, statistics } = apiData.items[0];
+    const views = parseInt(statistics.viewCount || '0', 10);
+    const likes = statistics.likeCount ? parseInt(statistics.likeCount, 10) : null;
+    const comments = statistics.commentCount ? parseInt(statistics.commentCount, 10) : null;
+
+    // Rough public CPM range used across the industry for estimate calculators.
+    // Real earnings depend on niche, audience country, ad settings, and are
+    // only ever visible to the channel owner in YouTube Studio.
+    const lowCPM = 0.25;
+    const highCPM = 4;
+    const estimateLow = ((views / 1000) * lowCPM).toFixed(2);
+    const estimateHigh = ((views / 1000) * highCPM).toFixed(2);
+
+    res.json({
+      videoId,
+      title: snippet.title,
+      channelTitle: snippet.channelTitle,
+      channelId: snippet.channelId,
+      publishedAt: snippet.publishedAt,
+      views,
+      likes,
+      comments,
+      estimateLow,
+      estimateHigh
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Could not fetch video stats. Please try again.' });
+  }
+});
+
 // --- Main extraction endpoint ---
 app.post('/api/extract', rateLimit, async (req, res) => {
   try {
