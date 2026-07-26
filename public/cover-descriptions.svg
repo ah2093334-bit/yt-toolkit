@@ -1,0 +1,25 @@
+<svg width="600" height="300" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00C2D1"/>
+      <stop offset="100%" stop-color="#5B4FE9"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="300" fill="#E4F8FA"/>
+  <rect x="380" y="70" width="170" height="210" rx="14" fill="#9FE6EC" transform="rotate(8 465 175)"/>
+  <rect x="380" y="70" width="170" height="210" rx="14" fill="#5FCFDB" transform="rotate(-4 465 175)"/>
+  <rect x="370" y="55" width="180" height="220" rx="14" fill="url(#g2)"/>
+  <rect x="400" y="90" width="120" height="10" rx="5" fill="rgba(255,255,255,0.7)"/>
+  <rect x="400" y="112" width="90" height="10" rx="5" fill="rgba(255,255,255,0.5)"/>
+  <rect x="400" y="150" width="120" height="10" rx="5" fill="rgba(255,255,255,0.7)"/>
+  <rect x="400" y="172" width="70" height="10" rx="5" fill="rgba(255,255,255,0.5)"/>
+  <rect x="400" y="210" width="120" height="10" rx="5" fill="rgba(255,255,255,0.7)"/>
+
+  <rect x="30" y="26" width="150" height="28" rx="14" fill="#00A9B7"/>
+  <text x="105" y="45" font-family="Sora, sans-serif" font-weight="700" font-size="13" fill="white" text-anchor="middle">DIGITAL PACK</text>
+
+  <text x="30" y="120" font-family="Sora, sans-serif" font-weight="800" font-size="28" fill="#1B1B2F">YouTube Description</text>
+  <text x="30" y="158" font-family="Sora, sans-serif" font-weight="800" font-size="28" fill="#1B1B2F">Templates</text>
+  <text x="30" y="192" font-family="Inter, sans-serif" font-weight="500" font-size="15" fill="#5B5B72">30 ready-to-fill, SEO-friendly templates</text>
+  <text x="30" y="255" font-family="Sora, sans-serif" font-weight="800" font-size="26" fill="#00A9B7">$7</text>
+</svg>
