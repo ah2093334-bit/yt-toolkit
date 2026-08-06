@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YT Video to Text Converter — Free — AllVidExtract</title>
+<meta name="description" content="Convert any YouTube video into text — title, description, and transcript — for free, in seconds.">
+<link rel="canonical" href="https://REPLACE-WITH-YOUR-DOMAIN/video-to-text">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="ticker-bar"><div class="ticker-track"><span class="ticker-dot"></span><a href="index.html" class="badge b1">Home</a><a href="index.html" class="badge b2">Extractor</a><a href="analyze.html" class="badge b3">Title Analyzer</a><a href="store.html" class="badge b4">Store</a><a href="blog.html" class="badge b5">Blog</a><a href="support.html" class="badge b6">Support</a><a href="about.html" class="badge b7">About</a><a href="contact.html" class="badge b8">Contact</a><span class="ticker-dot"></span><a href="index.html" class="badge b1">Home</a><a href="index.html" class="badge b2">Extractor</a><a href="analyze.html" class="badge b3">Title Analyzer</a><a href="store.html" class="badge b4">Store</a><a href="blog.html" class="badge b5">Blog</a><a href="support.html" class="badge b6">Support</a><a href="about.html" class="badge b7">About</a><a href="contact.html" class="badge b8">Contact</a></div></div>
+
+
+
+<!-- Sidebar menu -->
+<div id="sidebarOverlay" class="sidebar-overlay"></div>
+<aside id="sidebar" class="sidebar">
+  <button id="sidebarClose" class="sidebar-close" aria-label="Close menu">✕</button>
+  <a href="index.html" class="brand" style="margin-bottom: 24px;">
+    <img src="logo.svg" alt="AllVidExtract logo" class="brand-logo">
+    <span class="brand-name">AllVidExtract</span>
+  </a>
+  <nav class="sidebar-links">
+    <a href="index.html">Home</a>
+    <a href="tools.html">Tools</a>
+    <a href="analyze.html">Title Analyzer</a>
+    <a href="blog.html">Blog</a>
+    <a href="store.html">Store</a>
+    <a href="support.html">Support</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="privacy.html">Privacy Policy</a>
+    <a href="disclaimer.html">Disclaimer</a>
+  </nav>
+</aside>
+
+<header class="site-header" style="padding-bottom: 40px;">
+  <canvas id="starfield"></canvas>
+  <nav class="navbar">
+    <div class="navbar-left">
+      <button id="menuBtn" class="menu-btn" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="index.html" class="brand">
+        <img src="logo.svg" alt="AllVidExtract logo" class="brand-logo">
+        <span class="brand-name rainbow-text">AllVidExtract</span>
+      </a>
+    </div>
+    <div class="nav-links">
+      <a href="tools.html">Tools</a>
+    <a href="analyze.html">Title Analyzer</a>
+      <a href="blog.html">Blog</a>
+    <a href="store.html">Store</a>
+    <a href="support.html">Support</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </div>
+  </nav>
+</header>
+
+<section class="page-content" style="max-width:760px; margin: 30px auto 0;">
+  <p class="breadcrumb"><a href="index.html">Home</a> / <span>YT Video to Text</span></p>
+  <h1>YT Video to Text Converter</h1>
+  <p>Turn any YouTube video into readable text in seconds. Paste the link below to get the title, description, and full transcript — everything you need to repurpose a video into a blog post, notes, or a script.</p>
+</section>
+
+<main class="stage">
+
+  <section class="input-card">
+    <label for="ytUrl" class="input-label">Paste your video link</label>
+    <div class="input-row">
+      <input id="ytUrl" type="text" placeholder="https://www.youtube.com/watch?v=..." autocomplete="off">
+      <button id="extractBtn">Extract</button>
+    </div>
+    <p id="errorMsg" class="error-msg" hidden></p>
+  </section>
+
+  <div id="scrubber" class="scrubber" hidden>
+    <div class="scrubber-track">
+      <div class="scrubber-fill"></div>
+    </div>
+    <span class="scrubber-label">Extracting…</span>
+  </div>
+
+  <section id="results" class="results" hidden>
+
+    <div class="result-block">
+      <div class="block-head"><span class="block-index">01</span><h2>Thumbnail</h2></div>
+      <div class="thumb-wrap">
+        <img id="outThumb" alt="Video thumbnail">
+        <div id="thumbOptions" class="thumb-options"></div>
+      </div>
+    </div>
+
+    <div class="result-block">
+      <div class="block-head">
+        <span class="block-index">02</span><h2>Title</h2>
+        <button class="copy-btn" data-copy-target="outTitle">Copy</button>
+      </div>
+      <p id="outTitle" class="copyable big-text"></p>
+    </div>
+
+    <div class="result-block">
+      <div class="block-head">
+        <span class="block-index">03</span><h2>Description</h2>
+        <button class="copy-btn" data-copy-target="outDescription">Copy</button>
+      </div>
+      <p id="outDescription" class="copyable pre-wrap"></p>
+    </div>
+
+    <div class="result-block">
+      <div class="block-head">
+        <span class="block-index">04</span><h2>Tags</h2>
+        <button class="copy-btn" data-copy-target="outTags" data-copy-mode="chips">Copy all</button>
+      </div>
+      <div id="outTags" class="chip-row"></div>
+    </div>
+
+    <div class="result-block">
+      <div class="block-head">
+        <span class="block-index">05</span><h2>Hashtags</h2>
+        <button class="copy-btn" data-copy-target="outHashtags" data-copy-mode="chips">Copy all</button>
+      </div>
+      <div id="outHashtags" class="chip-row"></div>
+    </div>
+
+    <div class="result-block">
+      <div class="block-head">
+        <span class="block-index">06</span><h2>Transcript</h2>
+        <button class="copy-btn" data-copy-target="outTranscript">Copy</button>
+      </div>
+      <p id="outTranscript" class="transcript-box"></p>
+    </div>
+
+    <div class="result-block">
+      <div class="block-head"><span class="block-index">07</span><h2>Related topic ideas</h2></div>
+      <ol id="outTopics" class="topic-list"></ol>
+    </div>
+
+  </section>
+
+</main>
+
+<section class="page-content" style="max-width:760px; margin: 20px auto 60px;">
+  <h2>Frequently Asked Questions</h2>
+
+  <h3 style="font-size:1rem; margin-top:20px;">What does "video to text" actually convert?</h3>
+  <p>It pulls the video's existing text data — title, description, and the transcript from YouTube's captions — rather than generating new text from the video's audio track.</p>
+
+  <h3 style="font-size:1rem; margin-top:20px;">Can I use this to write a blog post from a video?</h3>
+  <p>Yes — many creators use the extracted transcript as the base for a blog post, restructuring it with their own headings afterward.</p>
+
+  <h3 style="font-size:1rem; margin-top:20px;">Is this free?</h3>
+  <p>Yes, free with a limit of 5 extractions per day per visitor.</p>
+
+  <h3 style="font-size:1rem; margin-top:20px;">What if the video has no captions?</h3>
+  <p>Title and description will still be extracted, but the transcript section will note that no captions are available for that specific video.</p>
+
+  <p style="margin-top:24px;">Also available: <a href="index.html">full metadata extractor</a>, <a href="transcript-extractor">transcript extractor</a>, and <a href="subtitle-downloader">subtitle downloader</a>.</p>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <img src="logo.svg" alt="AllVidExtract logo" class="brand-logo">
+      <span class="brand-name">AllVidExtract</span>
+      <p>Metadata &amp; captions only. No video/audio downloading — keeps this tool within every platform's terms.</p>
+      <div class="social-row">
+        <a href="#" aria-label="YouTube">YouTube</a>
+        <a href="#" aria-label="Facebook">Facebook</a>
+        <a href="#" aria-label="Instagram">Instagram</a>
+      </div>
+    </div>
+    <div class="footer-links">
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="privacy.html">Privacy Policy</a>
+      <a href="disclaimer.html">Disclaimer</a>
+    </div>
+  </div>
+  <div class="footer-person">
+    <img src="wafadar-photo.webp" alt="Wafadar" class="footer-photo">
+    <div>
+      <p class="footer-person-name">Wafadar</p>
+      <p class="footer-person-contact">ah2093334@gmail.com &middot; +92 349 9314726</p>
+    </div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

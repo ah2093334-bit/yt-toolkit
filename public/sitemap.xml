@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/index.html</loc><priority>1.0</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/transcript-extractor</loc><priority>0.9</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/subtitle-downloader</loc><priority>0.9</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/video-to-text</loc><priority>0.9</priority></url>
   <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/analyze.html</loc><priority>0.9</priority></url>
   <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/tools.html</loc><priority>0.8</priority></url>
   <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/store.html</loc><priority>0.8</priority></url>
@@ -18,6 +21,9 @@
   <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/product-documentary.html</loc><priority>0.6</priority></url>
   <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/product-ai-prompts.html</loc><priority>0.6</priority></url>
   <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/product-faceless-kit.html</loc><priority>0.6</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/product-video-ideas.html</loc><priority>0.6</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/product-voiceover.html</loc><priority>0.6</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/product-niche-ideas.html</loc><priority>0.6</priority></url>
   <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/blog-extract-title-tags-description.html</loc><priority>0.7</priority></url>
   <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/blog-download-youtube-thumbnail-hd.html</loc><priority>0.7</priority></url>
   <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/blog-youtube-transcript-extractor.html</loc><priority>0.7</priority></url>
@@ -28,4 +34,9 @@
   <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/blog-find-competitor-youtube-keywords.html</loc><priority>0.7</priority></url>
   <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/blog-complete-beginners-guide-youtube-seo.html</loc><priority>0.7</priority></url>
   <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/blog-how-to-start-faceless-youtube-channel.html</loc><priority>0.7</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/blog-how-much-youtube-earns-cpm.html</loc><priority>0.7</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/blog-price-sell-digital-products.html</loc><priority>0.7</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/blog-shorts-vs-long-form.html</loc><priority>0.7</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/blog-repurpose-one-video-into-10.html</loc><priority>0.7</priority></url>
+  <url><loc>https://REPLACE-WITH-YOUR-DOMAIN/blog-youtube-analytics-terms-explained.html</loc><priority>0.7</priority></url>
 </urlset>

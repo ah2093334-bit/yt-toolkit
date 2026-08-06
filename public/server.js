@@ -10,6 +10,20 @@ const API_KEY = process.env.YOUTUBE_API_KEY;
 app.use(express.json());
 app.use(express.static('public'));
 
+// --- Clean SEO landing page URLs (no .html needed) ---
+// These map keyword-focused paths to their landing page files, so links
+// like /transcript-extractor work instead of /transcript-extractor.html.
+const cleanRoutes = {
+  '/transcript-extractor': 'landing-transcript-extractor.html',
+  '/subtitle-downloader': 'landing-subtitle-downloader.html',
+  '/video-to-text': 'landing-video-to-text.html'
+};
+Object.entries(cleanRoutes).forEach(([path, file]) => {
+  app.get(path, (req, res) => {
+    res.sendFile(file, { root: 'public' });
+  });
+});
+
 // --- Simple in-memory rate limiter: 5 free extractions per IP per day ---
 // NOTE: resets when the server restarts (Railway free tier can restart the
 // service periodically). For a persistent/paid-tier limit, this would need
